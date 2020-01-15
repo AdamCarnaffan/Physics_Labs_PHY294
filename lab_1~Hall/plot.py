@@ -19,27 +19,13 @@ def get_fit_quality_chi_sq(y, fit_y, y_acc):
     y_diff = [ypt - fitpt for ypt, fitpt in zip(y, fit_y)]
     return sum([(ypt - fitpt)**2/acc**2 for ypt, fitpt, acc in zip(y, fit_y, y_acc)])
 
-def compute_lambda_s(m, theta):
-    return m*lambda_L/np.sin(theta)
-
 #%% Get Data
-data_1 = read_csv('lab_1~Ultrasonic/src1.txt')
-plot_data = np.array(data_1)
+data_1 = read_csv('lab_1~Hall/Cr_src1.txt')
+data_2 = read_csv('lab_1~Hall/Cr_src2.txt')
+data_3 = read_csv('lab_1~Hall/Cr_src3.txt')
+plot_data = [np.array(data_1), np.array(data_2), np.array(data_3)]
 
-# Get uncertainties
-lambda_L = 0.000000614361
-theta_L = 0.120855
-d_sodium = 0.0254/2500
-
-m_err = 0
-theta_err = 0.000039269
-d_err = 0.0000005
-lambda_L_err = lambda_L * np.sqrt((d_err/d_sodium)**2 + (theta_err/theta_L)**2)
-
-# Get averages
-avg_theta = np.array([sum([plot_data[v][trial] for trial in range(2, len(plot_data[0]))])/(len(plot_data[0]) - 2) for v in range(0, len(plot_data))])
-avg_lambda_s = [compute_lambda_s(plot_data[row][1], avg_theta[row]) for row in range(0, len(avg_theta))]
-avg_lambda_err = [lambda_s*np.sqrt((lambda_L_err/lambda_L)**2 + (theta_err/theta)**2) for lambda_s, theta in zip(avg_lambda_s, avg_theta)]
+trial_field_strengths = [770, 460, 325]
 
 #%% Data Fitting for Average
 m, b = get_ls_line(1/plot_data[:,0], avg_lambda_s)
