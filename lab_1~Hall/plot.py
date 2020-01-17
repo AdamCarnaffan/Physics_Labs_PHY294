@@ -19,24 +19,24 @@ def get_fit_quality_chi_sq(y, fit_y, y_acc):
     y_diff = [ypt - fitpt for ypt, fitpt in zip(y, fit_y)]
     return sum([(ypt - fitpt)**2/acc**2 for ypt, fitpt, acc in zip(y, fit_y, y_acc)])
 
-#%% Get Data
-data_1 = read_csv('lab_1~Hall/Cr_src1.txt')
-data_2 = read_csv('lab_1~Hall/Cr_src2.txt')
-data_3 = read_csv('lab_1~Hall/Cr_src3.txt')
+#%% Get Data (Cr)
+data_1 = read_csv('Cr_src1.txt')
+data_2 = read_csv('Cr_src2.txt')
+data_3 = read_csv('Cr_src3.txt')
 plot_data = [np.array(data_1), np.array(data_2), np.array(data_3)]
 
 trial_field_strengths = [770, 460, 325]
 
 #%% Data Fitting for Average
-m, b = get_ls_line(1/plot_data[:,0], avg_lambda_s)
-ls_fit = [b + m * x for x in 1/plot_data[:,0]]
+# m, b = get_ls_line(1/plot_data[:,0], avg_lambda_s)
+# ls_fit = [b + m * x for x in 1/plot_data[:,0]]
 
 #%% Plotting Average
 plot.style.use('ggplot')
-plot.errorbar(1/plot_data[:,0], avg_lambda_s, yerr=avg_lambda_err, 
-                                            xerr=[0.005]*len(plot_data[:,0]), fmt='ro')
+# plot.errorbar(1/plot_data[:,0], avg_lambda_s, yerr=avg_lambda_err, 
+#                                             xerr=[0.005]*len(plot_data[:,0]), fmt='ro')
 plot.title("Wavelength of Ultrasonic Waves at Different Frequencies", color='k')
-plot.plot(1/plot_data[:,0], ls_fit)
+# plot.plot(1/plot_data[:,0], ls_fit)
 plot.xlabel("1 / Frequency [1s x $10^{-6}$]")
 plot.ylabel("Wavelength [m]")
 fig = plot.gcf()
@@ -59,14 +59,14 @@ print("slope: {}; intercept: {};".format(m, b))
 print("slope error: {}; intercept error: {};".format(s_m, s_b))
 
 #%% Plot Residuals
-plot.style.use('ggplot')
-plot.errorbar(1/plot_data[:,0], np.array(avg_lambda_s) - np.array(ls_fit), yerr=avg_lambda_err, 
-                                            xerr=[0.005]*len(plot_data[:,0]), fmt='ro')
-plot.title("Residuals of Ultrasonic Waves at Different Frequencies", color='k')
-plot.plot(1/plot_data[:,0], [0]*11)
-plot.xlabel("1 / Frequency [1s x $10^{-6}$]")
-plot.ylabel("Standardized Residuals for Wavelength [m]")
-fig = plot.gcf()
-plot.figure()
+# plot.style.use('ggplot')
+# plot.errorbar(1/plot_data[:,0], np.array(avg_lambda_s) - np.array(ls_fit), yerr=avg_lambda_err, 
+#                                             xerr=[0.005]*len(plot_data[:,0]), fmt='ro')
+# plot.title("Residuals of Ultrasonic Waves at Different Frequencies", color='k')
+# plot.plot(1/plot_data[:,0], [0]*11)
+# plot.xlabel("1 / Frequency [1s x $10^{-6}$]")
+# plot.ylabel("Standardized Residuals for Wavelength [m]")
+# fig = plot.gcf()
+# plot.figure()
 
 #%%
