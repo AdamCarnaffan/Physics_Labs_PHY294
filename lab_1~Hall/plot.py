@@ -27,9 +27,17 @@ plot_data = [np.array(data_1), np.array(data_2), np.array(data_3)]
 
 trial_field_strengths = [770, 460, 325]
 
+W = 2.2
+L = 2.4
+
+#%% Calculate
+for i in range(0,3,1):
+    plot_data[i][:,0] = plot_data[i][:,0]/W
+    plot_data[i][:,2] = plot_data[i][:,2]/(L*W)
+
 #%% Data Fitting for Average
-# m, b = get_ls_line(1/plot_data[:,0], avg_lambda_s)
-# ls_fit = [b + m * x for x in 1/plot_data[:,0]]
+m, b = get_ls_line(plot_data[0][:,0], plot_data[0][:,2])
+ls_fit = [b + m * x for x in plot_data[:,0]]
 
 #%% Plotting Average
 plot.style.use('ggplot')
