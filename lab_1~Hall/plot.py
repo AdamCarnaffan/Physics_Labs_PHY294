@@ -38,18 +38,20 @@ for i in range(0,3,1):
 
 #%% Data Fitting for Sets
 ls_fit = [[],[],[]]
+fits = [[],[],[]]
 
 for i in range(0, 3, 1):
     m, b = get_ls_line(plot_data[i][:,0], plot_data[i][:,2])
     ls_fit[i] = [b + m * x for x in plot_data[i][:,0]]
+    fits[i] = [m, b]
 
 #%% Plotting Average
 
 # Build Plot
 plot.style.use('ggplot')
 plot.title("Hall Effect at Different Magnetic Field Strengths (Cr)", color='k')
-plot.xlabel("Some Unit of measure")
-plot.ylabel("Another Unit of measure")
+plot.xlabel("Electric Field Strength($E_y$) [J]")
+plot.ylabel("Charge Density($J_x$) [$A/m^2$]")
 
 # Plot data
 for i in range(0,3,1):
@@ -58,12 +60,14 @@ for i in range(0,3,1):
                         xerr=plot_data[i][:,1], fmt='o', color=colors[i])
     plot.plot(plot_data[i][:,0], ls_fit[i], color=colors[i])
 
+plot.legend(['Field Strength: {}G'.format(x) for x in trial_field_strengths])
+
 # Display
 fig = plot.gcf()
 plot.figure()
 
 #%% Save Figure
-fig.savefig('sexyplot.png', facecolor='w')
+# fig.savefig('sexyplot.png', facecolor='w')
 
 #%% Fit Quality for Average
 for i in range(0,3,1):
@@ -73,22 +77,26 @@ for i in range(0,3,1):
     # Get uncertainty
     pts_len = len(plot_data[i][:,0])
     delta = pts_len*sum([(1/x)**2 for x in plot_data[i][:,0]]) - sum([1/x for x in plot_data[i][:,0]])**2
-    s_yxsq = (1/(pts_len - 2))*sum([(ypt - yest)**2 for ypt, yest in zip(plot_data[i][:,2], ls_fit)])
+    s_yxsq = (1/(pts_len - 2))*sum([(ypt - yest)**2 for ypt, yest in zip(plot_data[i][:,2], ls_fit[i])])
     s_m = np.sqrt(pts_len*(s_yxsq/delta))
     s_b = np.sqrt((s_yxsq*sum([(1/x)**2 for x in plot_data[i][:,0]]))/delta)
-    print("slope: {}; intercept: {};".format(m, b))
+    print("slope: {}; intercept: {};".format(fits[i][0], fits[i][1]))
     print("slope error: {}; intercept error: {};".format(s_m, s_b))
 
 #%% Plot Residuals
-# plot.style.use('ggplot')
-# plot.errorbar(1/plot_data[:,0], np.array(avg_lambda_s) - np.array(ls_fit), yerr=avg_lambda_err, 
-#                                             xerr=[0.005]*len(plot_data[:,0]), fmt='ro')
-# plot.title("Residuals of Ultrasonic Waves at Different Frequencies", color='k')
-# plot.plot(1/plot_data[:,0], [0]*11)
-# plot.xlabel("1 / Frequency [1s x $10^{-6}$]")
-# plot.ylabel("Standardized Residuals for Wavelength [m]")
-# fig = plot.gcf()
-# plot.figure()
+plot.style.use('ggplot')
+for i in range(0, len(plot_data), 1):
+    # print(len(ls_fit))
+    plot.errorbar(1/plot_data[i][:,0], np.array(plot_data[i][:,2]) - np.array(ls_fit[i]), yerr=plot_data[i][:,3], 
+                                            xerr=plot_data[i][:,1], fmt='o')
+    plot.plot(1/plot_data[i][:,0], [0]*len(plot_data[i][:,0]))
+
+plot.title("Residuals of Charge Density in Electric Fields (Cr)", color='k')
+plot.xlabel("Electric Field Strength($E_y$) [J]")
+plot.ylabel("Standardized Residuals for Charge Density($J_x$)")
+plot.legend(['Field Strength: {}G'.format(x) for x in trial_field_strengths])
+fig = plot.gcf()
+plot.figure()
 
 #%% Get Data (Ag)
 data_1 = read_csv('Ag_src1.txt')
@@ -108,18 +116,20 @@ for i in range(0,3,1):
 
 #%% Data Fitting for Sets
 ls_fit = [[],[],[]]
+fits = [[],[],[]]
 
 for i in range(0, 3, 1):
     m, b = get_ls_line(plot_data[i][:,0], plot_data[i][:,2])
     ls_fit[i] = [b + m * x for x in plot_data[i][:,0]]
+    fits[i] = [m, b]
 
 #%% Plotting Average
 
 # Build Plot
 plot.style.use('ggplot')
 plot.title("Hall Effect at Different Magnetic Field Strengths (Ag)", color='k')
-plot.xlabel("Some Unit of measure")
-plot.ylabel("Another Unit of measure")
+plot.xlabel("Electric Field Strength($E_y$) [J]")
+plot.ylabel("Charge Density($J_x$) [$A/m^2$]")
 
 # Plot data
 for i in range(0,3,1):
@@ -128,12 +138,14 @@ for i in range(0,3,1):
                         xerr=plot_data[i][:,1], fmt='o', color=colors[i])
     plot.plot(plot_data[i][:,0], ls_fit[i], color=colors[i])
 
+plot.legend(['Field Strength: {}G'.format(x) for x in trial_field_strengths])
+
 # Display
 fig = plot.gcf()
 plot.figure()
 
 #%% Save Figure
-fig.savefig('sexyplot.png', facecolor='w')
+# fig.savefig('sexyplot.png', facecolor='w')
 
 #%% Fit Quality for Average
 for i in range(0,3,1):
@@ -143,8 +155,23 @@ for i in range(0,3,1):
     # Get uncertainty
     pts_len = len(plot_data[i][:,0])
     delta = pts_len*sum([(1/x)**2 for x in plot_data[i][:,0]]) - sum([1/x for x in plot_data[i][:,0]])**2
-    s_yxsq = (1/(pts_len - 2))*sum([(ypt - yest)**2 for ypt, yest in zip(plot_data[i][:,2], ls_fit)])
+    s_yxsq = (1/(pts_len - 2))*sum([(ypt - yest)**2 for ypt, yest in zip(plot_data[i][:,2], ls_fit[i])])
     s_m = np.sqrt(pts_len*(s_yxsq/delta))
     s_b = np.sqrt((s_yxsq*sum([(1/x)**2 for x in plot_data[i][:,0]]))/delta)
-    print("slope: {}; intercept: {};".format(m, b))
+    print("slope: {}; intercept: {};".format(fits[i][0], fits[i][1]))
     print("slope error: {}; intercept error: {};".format(s_m, s_b))
+
+#%% Plot Residuals
+plot.style.use('ggplot')
+for i in range(0, len(plot_data), 1):
+    # print(len(ls_fit))
+    plot.errorbar(1/plot_data[i][:,0], np.array(plot_data[i][:,2]) - np.array(ls_fit[i]), yerr=plot_data[i][:,3], 
+                                            xerr=plot_data[i][:,1], fmt='o')
+    plot.plot(1/plot_data[i][:,0], [0]*len(plot_data[i][:,0]))
+
+plot.title("Residuals of Charge Density in Electric Fields (Ag)", color='k')
+plot.xlabel("Electric Field Strength($E_y$) [J]")
+plot.ylabel("Standardized Residuals for Charge Density($J_x$)")
+plot.legend(['Field Strength: {}G'.format(x) for x in trial_field_strengths])
+fig = plot.gcf()
+plot.figure()
