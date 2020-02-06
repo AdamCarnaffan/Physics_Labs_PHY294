@@ -26,15 +26,19 @@ data_2 = read_csv('Cr_src2.txt')
 data_3 = read_csv('Cr_src3.txt')
 plot_data = [np.array(data_1), np.array(data_2), np.array(data_3)]
 
-trial_field_strengths = [770, 460, 320]
+trial_field_strengths = np.array([770, 460, 320])
 
-W = 2.2
-L = 2.4
+W = 2.2/100
+T = 6.64*10e-5
 
 #%% Calculate
 for i in range(0,3,1):
-    plot_data[i][:,0] = plot_data[i][:,0]/W
-    plot_data[i][:,2] = plot_data[i][:,2]/(L*W)
+    sv = plot_data[i][:,2]
+    ev = plot_data[i][:,3]
+    plot_data[i][:,2] = plot_data[i][:,0]/W
+    plot_data[i][:,3] = 21
+    plot_data[i][:,0] = sv/(T*W)
+    plot_data[i][:,1] = 1800000
 
 #%% Data Fitting for Sets
 ls_fit = [[],[],[]]
@@ -50,8 +54,8 @@ for i in range(0, 3, 1):
 # Build Plot
 plot.style.use('ggplot')
 plot.title("Hall Effect at Different Magnetic Field Strengths (Cr)", color='k')
-plot.xlabel("Electric Field Strength($E_y$) [J]")
-plot.ylabel("Charge Density($J_x$) [$A/m^2$]")
+plot.xlabel("Charge Density($J_x$) [$A/m^2$]")
+plot.ylabel("Electric Field Strength($E_y$) [J]")
 
 # Plot data
 for i in range(0,3,1):
@@ -82,6 +86,7 @@ for i in range(0,3,1):
     s_b = np.sqrt((s_yxsq*sum([(1/x)**2 for x in plot_data[i][:,0]]))/delta)
     print("slope: {}; intercept: {};".format(fits[i][0], fits[i][1]))
     print("slope error: {}; intercept error: {};".format(s_m, s_b))
+    print("R_H => {}".format(m/trial_field_strengths[i]))
 
 #%% Plot Residuals
 plot.style.use('ggplot')
@@ -106,13 +111,17 @@ plot_data = [np.array(data_1), np.array(data_2), np.array(data_3)]
 
 trial_field_strengths = [810, 590, 390]
 
-W = 2.3
-L = 2.2
+W = 2.3/100
+T = 2.92*10e-5
 
 #%% Calculate
 for i in range(0,3,1):
-    plot_data[i][:,0] = plot_data[i][:,0]/W
-    plot_data[i][:,2] = plot_data[i][:,2]/(L*W)
+    sv = plot_data[i][:,2]
+    ev = plot_data[i][:,3]
+    plot_data[i][:,2] = plot_data[i][:,0]/W
+    plot_data[i][:,3] = 21
+    plot_data[i][:,0] = sv/(T*W)
+    plot_data[i][:,1] = 1800000
 
 #%% Data Fitting for Sets
 ls_fit = [[],[],[]]
@@ -128,8 +137,8 @@ for i in range(0, 3, 1):
 # Build Plot
 plot.style.use('ggplot')
 plot.title("Hall Effect at Different Magnetic Field Strengths (Ag)", color='k')
-plot.xlabel("Electric Field Strength($E_y$) [J]")
-plot.ylabel("Charge Density($J_x$) [$A/m^2$]")
+plot.xlabel("Charge Density($J_x$) [$A/m^2$]")
+plot.ylabel("Electric Field Strength($E_y$) [J]")
 
 # Plot data
 for i in range(0,3,1):
@@ -160,6 +169,7 @@ for i in range(0,3,1):
     s_b = np.sqrt((s_yxsq*sum([(1/x)**2 for x in plot_data[i][:,0]]))/delta)
     print("slope: {}; intercept: {};".format(fits[i][0], fits[i][1]))
     print("slope error: {}; intercept error: {};".format(s_m, s_b))
+    print("R_H => {}".format(m/trial_field_strengths[i]))
 
 #%% Plot Residuals
 plot.style.use('ggplot')
@@ -175,3 +185,5 @@ plot.ylabel("Standardized Residuals for Charge Density($J_x$)")
 plot.legend(['Field Strength: {}G'.format(x) for x in trial_field_strengths])
 fig = plot.gcf()
 plot.figure()
+
+# %%
